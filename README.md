@@ -47,9 +47,16 @@ sends messages from one database to another, and in many cases will send message
 producers from RabbitMQ, and to send them to multiple receivers at once. 
 
 References:
+
 https://betterprogramming.pub/introduction-to-message-queue-with-rabbitmq-python-639e397cb668
+
 https://betterprogramming.pub/rabbitmq-vs-kafka-1779b5b70c41
+
 https://medium.com/@ansam.yousry/choosing-the-right-messaging-system-rabbitmq-vs-kafka-vs-amqp-369d02063785
+
+https://tanzu.vmware.com/content/blog/understanding-the-differences-between-rabbitmq-vs-kafka
+
+https://www.upsolver.com/blog/kafka-versus-rabbitmq-architecture-performance-use-case
 
 **Note on Docker**
 
@@ -60,3 +67,76 @@ or crash due to having too much space. In the end, the result was that I perform
 
 **An overview of the project itself**
 
+![install pika](https://github.com/edmundpark99/DATA605_Message_Queue/assets/6594718/2d9be5ec-acfc-4097-801f-06a1d41e661d)
+
+The very first thing we do in the Python code to start RabbitMQ's basic message queue is to !pip install pika to install the necessary packages, then import the pika package from the 
+installled package.
+
+![Basic Message Queue Code 1](https://github.com/edmundpark99/DATA605_Message_Queue/assets/6594718/8d7f9258-eeb3-4f77-9b8e-eee7ae39e90f)
+
+From here, our first lines of code involve connecting directly to the RabbitMQ server.
+
+We establish parameters, which will equal pika.URLParameters and a URL of the connection to the RabbitMQ databse, which in this case is given via CloudAMQP. The URL includes a username
+and password, aka credentials, as well as a server URL. The "connection" will be pika.BlockingConnection(parameters) to help to close the connection once it has completed publishing the 
+message. The "channel" will equal connection.channel(), which will open the connection upon running.
+
+The credentials and URL are obtained from CloudAMQP, which is shown in this screenshot:
+
+![CloudAMQP Database](https://github.com/edmundpark99/DATA605_Message_Queue/assets/6594718/1116bb24-8bfe-4e96-a697-145c4934e55d)
+
+Above, you can see the CloudAMQP website, which you log into, and it will give you a username and password with which you will copypaste and use in your code above. This will be 
+different for every individual.
+
+![Basic Message Queue Code 2](https://github.com/edmundpark99/DATA605_Message_Queue/assets/6594718/1f95edbf-30e8-4011-b2c3-ca284aec9986)
+
+From here, you declare a queue named "Hello!" in the script, and this queue will hold messages sent and received by the script.
+
+![Basic Message Queue Code 3](https://github.com/edmundpark99/DATA605_Message_Queue/assets/6594718/c8dcb547-8e41-4c7d-bcc4-9cf6be4edc71)
+
+The following code is if you intend to publish a message using this code, which it will using the sample message "Hello, RabbitMQ" and send to the queue.
+
+![Basic Message Queue Code 4](https://github.com/edmundpark99/DATA605_Message_Queue/assets/6594718/e5c041c7-1dc1-48eb-a448-9d0266a2a0f2)
+
+The above code is used if you intend to consume/receive a message, using a consumer function "callback" to handle incoming messages. The script will subscribe to the hello queue and 
+wait for incoming messages, then the callback function will print the received message, in this case, it's "Hello, RabbitMQ!"
+
+With the above script, it will continue to listen for incoming messages until it is interrupted, such as through pressing CTRL+C.
+
+![Basic Message Queue Code 5](https://github.com/edmundpark99/DATA605_Message_Queue/assets/6594718/bbb15cc5-c894-4b04-b8d6-9d5ada6fad31)
+
+After all of the above code is run and the code is run, the above line will close the connection to the RabbitMQ and AMQP server.
+
+[x] Sent 'Hello, RabbitMQ!' 
+
+The above is a sample output in the event that one runs the code that involves publishing and sending a message.
+
+[*] Waiting for messages. To exit press CTRL+C
+ [x] Received b'Hello, RabbitMQ!'
+
+The above is an example of the output of the code in the event that one intends to consume a message.
+
+sequenceDiagram
+    participant Script
+    participant RabbitMQ
+    Script->>RabbitMQ: Connect to RabbitMQ server
+    Script->>RabbitMQ: Declare Queue 'hello'
+    Script->>RabbitMQ: Publish Message 'Hello, RabbitMQ!'
+    RabbitMQ-->>Script: Message Acknowledgement
+    Script->>RabbitMQ: Start Consuming from Queue 'hello'
+    RabbitMQ-->>Script: Message 'Hello, RabbitMQ!'
+    Note over Script: Message Received\n'Hello, RabbitMQ!'
+
+Above is a diagram of how the RabbitMQ basic message queue operates, written in mermaid. It establishes two participants, the "Script" and the "RabbitMQ" server. From there, the 
+Script, aka the Python Script we are running, will connect to RabbitMQ, then declare a queue named 'hello'. THe Script will publish a message, and then RabbitMQ acknowledges the 
+message, and the script will then start consuming the message from the queue, which the server sends to the script.
+
+In this case, since we are not using Docker due to complications with VMWare, this script does not directly interact with a database. However, if it were to do so by storing messages 
+in a database, we might have a sample schema that looks like this:
+
+- Table: "messages"
+  - Columns:
+      - 'id' (Primary Key, auto-increment)
+      - 'content' (Text)
+      - 'timestamp' (Datetime)
+   
+The above would be a basic outline of what a hypothetical database would look like, if one was used.
