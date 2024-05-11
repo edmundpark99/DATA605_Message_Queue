@@ -39,9 +39,24 @@ understand), and has more limited throughput compared to other messaging systems
 and extensive integration with other technologies, and has higher throughput. In spite of these, RabbitMQ does have its advantages over its competitor Kafka and as a message queue 
 itself and can be quite useful in several applications.
 
-In general, RabbitMQ takes great advantage of a lot of big data technologies and topics. 
+In general, RabbitMQ takes great advantage of a lot of big data technologies and topics. Its fault-tolerance and scalability make it very adaptable to complement a variety of models 
+such as SQL and NoSQL, using them to handle high amounts of messages in a high throughput. It is a fundamental component in Apache Airflow pipelines thanks to the above aspects, with 
+its integration into Apache pipelines allowing it to perform its task of efficient message queuing and in turn allowing for streamlined data wrangling and deployment of its data in the
+form of messages that are sent and received. RabbitMQ also works with the use of modern storage and cloud computing in its production, transmission, and storage of messages. Because it 
+sends messages from one database to another, and in many cases will send messages to multiple databases at a time, it uses these to store data in the form of messages created by message
+producers from RabbitMQ, and to send them to multiple receivers at once. 
 
 References:
 https://betterprogramming.pub/introduction-to-message-queue-with-rabbitmq-python-639e397cb668
 https://betterprogramming.pub/rabbitmq-vs-kafka-1779b5b70c41
 https://medium.com/@ansam.yousry/choosing-the-right-messaging-system-rabbitmq-vs-kafka-vs-amqp-369d02063785
+
+**Note on Docker**
+
+While I would ideally have liked to use Docker, it ultimately failed to work in this project. I performed this project using a CloudAMQP server and a Jupyter notebook directly using my
+Windows 11 machine. Docker is generally not workable in a Windows environment, and needs to be in a Mac or Linux work environment. For a Windows environment, this would require the use 
+of a virtual machine using VMWare, which I attempted to work. However, setting up the virtual machine came with extreme difficulties as the machine would often fail due to lack of space
+or crash due to having too much space. In the end, the result was that I performed this project entirely with a Windows machine itself, without the assistance of Docker.
+
+**An overview of the project itself**
+
